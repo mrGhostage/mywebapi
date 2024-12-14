@@ -19,5 +19,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/out .
 
+ENV ASPNETCORE_URLS=http://+:8080
 # Указываем точку входа для запуска приложения
 ENTRYPOINT ["dotnet", "MyWebAPI.dll"]

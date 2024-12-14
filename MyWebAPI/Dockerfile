@@ -1,17 +1,23 @@
-# Используем официальный образ .NET для сборки
+# Используем официальный образ .NET SDK для сборки приложения
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Копируем проект и устанавливаем зависимости
-COPY *.csproj ./
+# Копируем файл проекта (*.csproj) в рабочую директорию контейнера
+COPY MyWebAPI/*.csproj ./
+
+# Выполняем восстановление зависимостей
 RUN dotnet restore
 
-# Копируем оставшиеся файлы и собираем приложение
-COPY . ./
+# Копируем все остальные файлы проекта
+COPY MyWebAPI/ ./
+
+# Собираем проект в режиме Release
 RUN dotnet publish -c Release -o out
 
 # Используем минимальный runtime-образ для запуска
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
+
+# Указываем точку входа для запуска приложения
 ENTRYPOINT ["dotnet", "MyWebAPI.dll"]

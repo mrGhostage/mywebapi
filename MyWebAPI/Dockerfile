@@ -1,6 +1,7 @@
 # Используем официальный образ .NET SDK для сборки приложения
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
+EXPOSE 8080
 
 # Копируем файл проекта (*.csproj) в рабочую директорию контейнера
 COPY MyWebAPI/*.csproj ./

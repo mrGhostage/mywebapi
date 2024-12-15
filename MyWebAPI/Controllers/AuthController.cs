@@ -17,7 +17,7 @@ public class AuthController(IConfiguration config) : ControllerBase
     {
         if (ValidateUser(login))
         {
-            var token = GenerateJwtToken(login.Username);
+            var token = GenerateJwtToken(login.username);
             return Ok(new { token });
         }
 
@@ -27,7 +27,7 @@ public class AuthController(IConfiguration config) : ControllerBase
     private bool ValidateUser(LoginModel login)
     {
         // Здесь должна быть проверка пользователя в базе данных
-        return login.Username == "test" && login.Password == "password";
+        return login.username == "test" && login.password == "password";
     }
 
     private string GenerateJwtToken(string username)
@@ -54,6 +54,6 @@ public class AuthController(IConfiguration config) : ControllerBase
 
 public class LoginModel
 {
-    public required string Username { get; set; }
-    public required string Password { get; set; }
+    public string username { get; set; }
+    public string password { get; set; }
 }

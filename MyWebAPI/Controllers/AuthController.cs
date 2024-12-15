@@ -7,7 +7,7 @@ using System.Text;
 namespace MyWebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class AuthController(IConfiguration config) : ControllerBase
 {
     private readonly IConfiguration _config = config;

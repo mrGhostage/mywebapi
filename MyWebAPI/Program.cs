@@ -38,7 +38,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowReactApp");
+app.UseCors("AllowReactApp"); // Apply CORS policy before authentication and authorization
+app.UseAuthentication();      // Add authentication middleware
+app.UseAuthorization();       // Add authorization middleware
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -48,8 +50,6 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

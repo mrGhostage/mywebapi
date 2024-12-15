@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:8081")
+        policy.WithOrigins("http://localhost:8081", "https://webpackapp-rx2k.onrender.com")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

@@ -1,12 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyWebAPI.Models.DB;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Configuration
-//     .SetBasePath(Directory.GetCurrentDirectory() + "/MyWebAPI")
-//     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-//     .AddEnvironmentVariables();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration
+        .SetBasePath(Directory.GetCurrentDirectory() + "/MyWebAPI")
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddEnvironmentVariables();
+}
+
+var dbConnection = builder.Configuration["ConnectionStrings:DefaultConnection"];
+builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(dbConnection));
+
 
 var key = builder.Configuration["Jwt:Key"];
 var issuer = builder.Configuration["Jwt:Issuer"];
@@ -60,6 +69,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseCors("AllowReactApp"); // Apply CORS policy before authentication and authorization
 app.UseAuthentication();      // Add authentication middleware

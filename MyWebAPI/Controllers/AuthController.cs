@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyWebAPI.Models.DB;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,14 +10,15 @@ namespace MyWebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IConfiguration config) : ControllerBase
+public class AuthController(IConfiguration config, ApplicationContext context) : ControllerBase
 {
     private readonly IConfiguration _config = config;
+    private readonly ApplicationContext _context = context;
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginModel login)
+    public async Task<IActionResult> Login([FromBody] LoginModel login)
     {
-        if (ValidateUser(login))
+        if (await ValidateUser(login))
         {
             var token = GenerateJwtToken(login.Username);
             return Ok(new { token });
@@ -24,10 +27,11 @@ public class AuthController(IConfiguration config) : ControllerBase
         return Unauthorized();
     }
 
-    private bool ValidateUser(LoginModel login)
+    private async Task<bool> ValidateUser(LoginModel login)
     {
         // Здесь должна быть проверка пользователя в базе данных
-        return login.Username == "test" && login.Password == "password";
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == login.Username);
+        return user != null && user.Password == login.Password;
     }
 
     private string GenerateJwtToken(string username)

@@ -17,7 +17,7 @@ public class AuthController(IConfiguration config) : ControllerBase
     {
         if (ValidateUser(login))
         {
-            var token = GenerateJwtToken(login.username);
+            var token = GenerateJwtToken(login.Username);
             return Ok(new { token });
         }
 
@@ -27,7 +27,7 @@ public class AuthController(IConfiguration config) : ControllerBase
     private bool ValidateUser(LoginModel login)
     {
         // Здесь должна быть проверка пользователя в базе данных
-        return login.username == "test" && login.password == "password";
+        return login.Username == "test" && login.Password == "password";
     }
 
     private string GenerateJwtToken(string username)
@@ -35,7 +35,7 @@ public class AuthController(IConfiguration config) : ControllerBase
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -43,7 +43,7 @@ public class AuthController(IConfiguration config) : ControllerBase
 
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
-            audience: null,
+            audience: _config["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: creds);
@@ -54,6 +54,6 @@ public class AuthController(IConfiguration config) : ControllerBase
 
 public class LoginModel
 {
-    public string username { get; set; }
-    public string password { get; set; }
+    public required string Username { get; set; }
+    public required string Password { get; set; }
 }

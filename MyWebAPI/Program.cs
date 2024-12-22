@@ -3,10 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory() + "/MyWebAPI")
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
+// builder.Configuration
+//     .SetBasePath(Directory.GetCurrentDirectory() + "/MyWebAPI")
+//     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+//     .AddEnvironmentVariables();
 
 var key = builder.Configuration["Jwt:Key"];
 var issuer = builder.Configuration["Jwt:Issuer"];

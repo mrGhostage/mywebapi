@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyWebAPI.Models.DB;
+using MyWebAPI.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241222062651_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250102041355_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,23 @@ namespace MyWebAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MyWebAPI.Models.DB.User", b =>
+            modelBuilder.Entity("MyWebAPI.Database.Models.StreetViewPoint", b =>
+                {
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("UsedCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Latitude", "Longitude");
+
+                    b.ToTable("StreetViewPoints");
+                });
+
+            modelBuilder.Entity("MyWebAPI.Database.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

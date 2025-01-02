@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MyWebAPI.Models.DB;
+using MyWebAPI.Database;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -25,6 +26,31 @@ public class AuthController(IConfiguration config, ApplicationContext context) :
         }
 
         return Unauthorized();
+    }
+
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<IActionResult> Profile()
+    {
+        var test = User.Claims.ToList();
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier); // Обычно идентификатор пользователя хранится в claim "sub"
+
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { message = "User not authorized" });
+        }
+
+        var login = userIdClaim.Value;
+
+        //Ищем пользователя в базе данных
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login);
+
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        return Ok(user);
     }
 
     private async Task<bool> ValidateUser(LoginModel login)

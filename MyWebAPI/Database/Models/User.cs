@@ -1,4 +1,4 @@
-namespace MyWebAPI.Models.DB;
+namespace MyWebAPI.Database.Models;
 
 public class User
 {

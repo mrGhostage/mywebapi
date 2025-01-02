@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using MyWebAPI.Database.Models;
 
-namespace MyWebAPI.Models.DB;
- 
+namespace MyWebAPI.Database;
+
 public class ApplicationContext(DbContextOptions<ApplicationContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<StreetViewPoint> StreetViewPoints { get; set; }
+
 
     // public ApplicationContext()
     // {
